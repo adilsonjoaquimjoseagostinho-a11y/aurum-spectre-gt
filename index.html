@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Aurum Spectre GT — Aurum Automóveis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Michroma&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0a0c0b; --bg2:#0f1311; --bronze:#ecebe6; --bronze-hi:#ffffff; --silver:#9ea09a;
+  --ink:#ece7dc; --muted:#8e9288; --soft:#b9b6ad; --line:rgba(255,255,255,.13);
+  --display:"Michroma","Eurostile","Helvetica Neue",Arial,sans-serif;
+  --sans:"Jost","Helvetica Neue",Arial,sans-serif;
+  --ease:cubic-bezier(.22,.8,.2,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{background:var(--bg);scroll-behavior:smooth}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.75;overflow-x:hidden;-webkit-font-smoothing:antialiased;letter-spacing:.01em}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer;color:inherit}
+::selection{background:var(--bronze);color:var(--bg)}
+
+/* LOADER */
+#loader{position:fixed;inset:0;z-index:300;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;transition:opacity 1.2s var(--ease)}
+#loader.done{opacity:0;pointer-events:none}
+#loader .lg{font-family:var(--display);font-size:20px;letter-spacing:.42em;padding-left:.42em}
+#loader .lb{width:140px;height:1px;background:rgba(255,255,255,.07);margin-top:28px;overflow:hidden}
+#loader .lb b{display:block;height:100%;width:0;background:var(--bronze);transition:width .3s}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:60;display:flex;align-items:center;justify-content:space-between;padding:calc(26px + env(safe-area-inset-top,0px)) 6vw 26px;transition:background .6s,padding .6s}
+nav.solid{background:rgba(10,12,11,.86);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);padding-top:calc(16px + env(safe-area-inset-top,0px));padding-bottom:16px}
+.logo{font-family:var(--display);font-size:15px;letter-spacing:.3em;padding-left:.3em}
+.nav-links{display:flex;gap:40px;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
+.nav-links a{transition:color .4s}
+.nav-links a:hover{color:var(--silver)}
+.btn{display:inline-flex;align-items:center;gap:14px;padding:4px 0 8px;border-bottom:1px solid var(--bronze);color:var(--silver);font-size:11px;letter-spacing:.32em;text-transform:uppercase;transition:color .4s,border-color .4s}
+.btn:hover{color:var(--ink);border-color:var(--ink)}
+@media (max-width:860px){.nav-links{display:none}}
+
+/* SCENES */
+.scene{position:relative;height:400vh;background:var(--bg)}
+.stage{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%}
+.stage::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,rgba(10,12,11,.85) 0%,rgba(10,12,11,0) 45%,rgba(10,12,11,0) 58%,rgba(10,12,11,.85) 100%),linear-gradient(to top,rgba(10,12,11,.9) 0%,transparent 30%)}
+.ov{position:absolute;z-index:3;top:50%;left:7vw;width:min(440px,84vw);opacity:0;will-change:transform,opacity;transform:translateY(-50%)}
+.ov.r{left:auto;right:7vw;text-align:right}
+.ov .k{font-size:11px;letter-spacing:.38em;text-transform:uppercase;color:var(--bronze);margin-bottom:22px}
+.ov h2{font-family:var(--display);font-weight:400;font-size:clamp(28px,3.4vw,54px);line-height:1;letter-spacing:.005em;margin-bottom:24px}
+.ov h2 em{font-style:normal;color:var(--silver)}
+.ov p{color:var(--soft);font-size:15px;line-height:1.85;max-width:380px}
+.ov.r p{margin-left:auto}
+.metric{margin-top:34px}
+.metric .num{font-family:var(--display);font-size:clamp(40px,4.4vw,70px);line-height:1;color:var(--ink)}
+.metric .cap{margin-top:12px;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
+.hero-title{top:auto;bottom:17vh;transform:none !important}
+.hero-title .eyebrow{font-size:11px;letter-spacing:.42em;text-transform:uppercase;color:var(--bronze);margin-bottom:26px}
+.hero-title h1{font-family:var(--display);font-weight:400;font-size:clamp(40px,7.6vw,120px);line-height:.9;letter-spacing:.03em;text-transform:uppercase}
+.hero-title .sub{margin-top:28px;font-size:15px;color:var(--soft);letter-spacing:.06em;max-width:440px}
+.progress{position:absolute;z-index:4;left:7vw;right:7vw;bottom:36px;height:1px;background:rgba(255,255,255,.08)}
+.progress b{display:block;height:100%;width:0;background:var(--bronze)}
+.hint{position:absolute;z-index:4;right:7vw;bottom:48px;font-size:10px;letter-spacing:.34em;text-transform:uppercase;color:var(--muted)}
+@media (max-width:860px){
+  .ov,.ov.r{left:7vw;right:7vw;width:auto;top:auto;bottom:100px;transform:none !important;text-align:left}
+  .ov.r p{margin-left:0}
+  .ov h2{font-size:30px}
+  .metric .num{font-size:36px}
+  .hero-title{bottom:130px}
+  .hint{display:none}
+  .stage::after{background:linear-gradient(to top,rgba(10,12,11,.95) 0%,rgba(10,12,11,.25) 55%,rgba(10,12,11,.3) 100%)}
+}
+
+/* BLOCKS */
+.block{position:relative;padding:160px 7vw}
+.kicker{font-size:11px;letter-spacing:.38em;text-transform:uppercase;color:var(--bronze);margin-bottom:22px}
+.h2b{font-family:var(--display);font-weight:400;font-size:clamp(34px,4.4vw,70px);line-height:.98}
+.h2b em{font-style:normal;color:var(--silver)}
+.rv{opacity:0;transform:translateY(36px);transition:opacity 1.4s var(--ease),transform 1.4s var(--ease)}
+.rv.in{opacity:1;transform:none}
+
+/* PERFORMANCE (scroll-driven bars) */
+.perf{background:var(--bg2)}
+.perf-head{display:flex;justify-content:space-between;align-items:flex-end;gap:40px;flex-wrap:wrap;margin-bottom:100px}
+.perf-head p{max-width:360px;color:var(--muted);font-size:14px}
+.bar-row{display:grid;grid-template-columns:1fr 2.4fr 170px;gap:40px;align-items:center;padding:40px 0;border-top:1px solid var(--line)}
+.bar-row:last-child{border-bottom:1px solid var(--line)}
+.bar-row .lbl{font-size:12px;letter-spacing:.3em;text-transform:uppercase;color:var(--soft)}
+.bar{position:relative;height:1px;background:rgba(255,255,255,.1)}
+.bar i{position:absolute;left:0;top:-1px;height:3px;width:0;background:linear-gradient(90deg,#6f706b,#ffffff)}
+.bar-row .val{font-family:var(--display);font-size:clamp(28px,2.8vw,42px);line-height:1;text-align:right;white-space:nowrap}
+.bar-row .val small{font-family:var(--sans);font-size:11px;letter-spacing:.24em;color:var(--muted);margin-left:10px}
+@media (max-width:860px){.bar-row{grid-template-columns:1fr;gap:18px}.bar-row .val{text-align:left}}
+
+/* INTERIOR */
+.interior{position:relative;height:115vh;overflow:hidden;background:var(--bg)}
+.interior .bgimg{position:absolute;left:0;top:-6%;width:100%;height:112%;object-fit:cover;will-change:transform;filter:saturate(.8) contrast(1.05)}
+.interior::before{content:"";position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(10,12,11,.92) 0%,rgba(10,12,11,.3) 55%,rgba(10,12,11,.1) 100%)}
+.int-text{position:absolute;z-index:2;left:7vw;top:50%;transform:translateY(-50%);width:min(500px,86vw)}
+.int-text h2{font-family:var(--display);font-weight:400;font-size:clamp(30px,3.6vw,58px);line-height:.98;margin-bottom:56px}
+.int-text h2 em{font-style:normal;color:var(--silver)}
+.int-item{display:grid;grid-template-columns:50px 1fr;gap:16px;padding:26px 0;border-top:1px solid rgba(255,255,255,.2);opacity:0;transform:translateX(-28px);transition:opacity 1.1s var(--ease),transform 1.1s var(--ease)}
+.int-item.in{opacity:1;transform:none}
+.int-item .n{font-family:var(--display);color:var(--bronze);font-size:18px;padding-top:2px}
+.int-item h4{font-family:var(--sans);font-weight:400;font-size:16px;letter-spacing:.02em;margin-bottom:8px}
+.int-item p{font-size:14px;color:var(--soft);line-height:1.75}
+@media (max-width:860px){.interior{height:auto;padding:120px 0 130px}.interior .bgimg{position:absolute;inset:0;height:100%;top:0}.int-text{position:relative;left:auto;top:auto;transform:none;padding:0 7vw}.interior::before{background:linear-gradient(to bottom,rgba(10,12,11,.55),rgba(10,12,11,.93))}}
+
+/* FICHA */
+.ficha-grid{display:grid;grid-template-columns:1fr 1.4fr;gap:100px;align-items:start}
+.ficha-intro p{margin-top:30px;color:var(--muted);max-width:340px;font-size:14px}
+.ficha-row{display:flex;justify-content:space-between;align-items:baseline;gap:24px;padding:26px 0;border-bottom:1px solid var(--line);opacity:0;transform:translateY(14px);transition:opacity 1s var(--ease),transform 1s var(--ease)}
+.ficha-row:first-child{border-top:1px solid var(--line)}
+.ficha-row.in{opacity:1;transform:none}
+.ficha-row span{font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
+.ficha-row strong{font-family:var(--display);font-weight:400;font-size:15px;letter-spacing:.06em;text-align:right}
+@media (max-width:960px){.ficha-grid{grid-template-columns:1fr;gap:60px}}
+
+/* RESERVA */
+.reserva{background:radial-gradient(ellipse 55% 70% at 50% 40%,rgba(30,58,47,.45),transparent 70%),var(--bg);text-align:center;padding:200px 7vw 160px}
+.reserva .price{font-family:var(--display);font-size:clamp(40px,5.6vw,88px);line-height:1;margin:30px 0 12px}
+.reserva .price small{display:block;font-family:var(--sans);font-size:11px;letter-spacing:.36em;text-transform:uppercase;color:var(--muted);margin-bottom:22px}
+.reserva .lead{color:var(--muted);max-width:460px;margin:0 auto;font-size:14px}
+.form{margin:70px auto 0;display:flex;gap:56px;justify-content:center;align-items:flex-end;flex-wrap:wrap;max-width:880px}
+.field{text-align:left;min-width:240px;flex:1}
+.field label{display:block;font-size:10px;letter-spacing:.3em;text-transform:uppercase;color:var(--bronze);margin-bottom:6px}
+.field input{width:100%;background:transparent;border:0;border-bottom:1px solid rgba(255,255,255,.35);padding:8px 0;color:var(--ink);font:400 18px var(--sans);outline:none;transition:border-color .4s}
+.field input:focus{border-color:var(--silver)}
+.field input::placeholder{color:#4f544d}
+.form .btn{padding-bottom:12px;color:var(--silver);white-space:nowrap}
+.toast{margin-top:30px;min-height:22px;color:var(--silver);font-size:13px;letter-spacing:.08em}
+@media (max-width:760px){.form{flex-direction:column;gap:36px}.field{width:100%}}
+
+footer{padding:50px 7vw;display:flex;justify-content:space-between;flex-wrap:wrap;gap:18px;border-top:1px solid var(--line);font-size:12px;color:var(--muted)}
+footer .disc{color:#5b6057}
+.final{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:160px 7vw;background:radial-gradient(ellipse 50% 60% at 50% 50%,rgba(30,58,47,.4),transparent 70%),var(--bg);border-top:1px solid var(--line)}
+.final-price{margin-top:44px}
+.final-price small{display:block;font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:var(--muted);margin-bottom:18px}
+.final-price span{font-family:var(--display);font-size:clamp(40px,5.6vw,88px);letter-spacing:.02em;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+.final-lead{margin-top:40px;max-width:460px;color:var(--muted);font-size:14px;line-height:1.8}
+</style>
+</head>
+<body>
+
+<div id="loader"><div class="lg">AURUM</div><div class="lb"><b id="lbar"></b></div></div>
+
+<nav id="nav">
+  <a class="logo" href="#top">AURUM</a>
+  <div class="nav-links">
+    <a href="#motor">Motor</a>
+    <a href="#performance">Desempenho</a>
+    <a href="#interior">Interior</a>
+    <a href="#ficha">Ficha técnica</a>
+  </div>
+  <a class="btn" href="#reserva">Preço</a>
+</nav>
+
+<!-- 1. CARRO GIRANDO -->
+<section class="scene" id="top">
+  <div class="stage">
+    <canvas id="cCar" aria-label="Aurum Spectre GT girando conforme a rolagem"></canvas>
+
+    <div class="ov hero-title" data-from="0" data-to="0.22">
+      <div class="eyebrow">Aurum · Edição 2026</div>
+      <h1>Spectre<br>GT</h1>
+      <div class="sub">Grand tourer para quem não precisa provar nada.</div>
+    </div>
+
+    <div class="ov" data-from="0.24" data-to="0.44">
+      <div class="k">I</div>
+      <h2>Desenhado para <em>cortar o vento</em></h2>
+      <p>Cada curva reduz o arrasto e mantém o carro colado no asfalto em alta velocidade.</p>
+    </div>
+
+    <div class="ov r" data-from="0.48" data-to="0.68">
+      <div class="k">II</div>
+      <h2>Pintura <em>fosca</em>, feita à mão</h2>
+      <p>Verde-garrafa com acabamento fosco, aplicado em três camadas e polido uma a uma no ateliê.</p>
+      <div class="metric"><div class="num">1.910</div><div class="cap">mm de largura</div></div>
+    </div>
+
+    <div class="ov" data-from="0.72" data-to="0.96">
+      <div class="k">III</div>
+      <h2>A partir de <em>R$ 1,29 mi</em></h2>
+      <p>48 unidades para o Brasil em 2026. Reserve uma consultoria privada e escolha a sua.</p>
+      <div style="margin-top:34px"><a class="btn" href="#reserva">Reservar</a></div>
+    </div>
+
+    <div class="hint">Role para explorar</div>
+    <div class="progress"><b id="pCar"></b></div>
+  </div>
+</section>
+
+<!-- 2. MOTOR (vídeo scrubbed) -->
+<section class="scene" id="motor">
+  <div class="stage">
+    <canvas id="cEng" aria-label="Motor V8 do Spectre GT"></canvas>
+
+    <div class="ov" data-from="0" data-to="0.3" style="top:18vh;transform:none">
+      <div class="k">Coração</div>
+      <h2>Um V8 <em>biturbo</em></h2>
+      <p>Quatro litros de potência concentrada, afinados para responder sem pausa.</p>
+    </div>
+
+    <div class="ov r" data-from="0.32" data-to="0.66">
+      <div class="k">Potência</div>
+      <div class="metric"><div class="num"><span data-cnt="720" data-start="0.32">0</span></div><div class="cap">cavalos a 6.500 rpm</div></div>
+      <p style="margin-top:26px">Equivale a mais de 700 cavalos trabalhando ao mesmo tempo.</p>
+    </div>
+
+    <div class="ov" data-from="0.7" data-to="0.96">
+      <div class="k">Torque</div>
+      <div class="metric"><div class="num"><span data-cnt="900" data-start="0.7">0</span></div><div class="cap">Nm disponíveis desde 2.000 rpm</div></div>
+      <p style="margin-top:26px">A força chega antes de você perceber a retomada.</p>
+    </div>
+
+    <div class="progress"><b id="pEng"></b></div>
+  </div>
+</section>
+
+<!-- 3. DESEMPENHO (barras preenchidas pela rolagem) -->
+<section class="block perf" id="performance">
+  <div class="perf-head rv">
+    <div>
+      <div class="kicker">Desempenho</div>
+      <h2 class="h2b">Números que <em>importam</em></h2>
+    </div>
+    <p>Medições em pista fechada, em condições ideais, com piloto de testes.</p>
+  </div>
+
+  <div class="bar-row">
+    <div class="lbl">0 a 100 km/h</div>
+    <div class="bar"><i data-w="92"></i></div>
+    <div class="val"><span data-num="3.1" data-dec="1">0</span><small>s</small></div>
+  </div>
+  <div class="bar-row">
+    <div class="lbl">0 a 200 km/h</div>
+    <div class="bar"><i data-w="74"></i></div>
+    <div class="val"><span data-num="9.4" data-dec="1">0</span><small>s</small></div>
+  </div>
+  <div class="bar-row">
+    <div class="lbl">Velocidade máxima</div>
+    <div class="bar"><i data-w="96"></i></div>
+    <div class="val"><span data-num="330" data-dec="0">0</span><small>km/h</small></div>
+  </div>
+  <div class="bar-row">
+    <div class="lbl">Frenagem 100 a 0</div>
+    <div class="bar"><i data-w="82"></i></div>
+    <div class="val"><span data-num="31" data-dec="0">0</span><small>m</small></div>
+  </div>
+</section>
+
+<!-- 4. INTERIOR -->
+<section class="interior" id="interior">
+  <img class="bgimg" id="intImg" alt="Interior do Aurum Spectre GT, com volante e bancos em couro">
+  <div class="int-text">
+    <div class="kicker">Interior</div>
+    <h2>Um escritório <em>silencioso</em></h2>
+    <div class="int-item"><div class="n">I</div><div><h4>Couro costurado à mão</h4><p>Bancos em couro com costura em contraste bronze, feitos sob encomenda.</p></div></div>
+    <div class="int-item"><div class="n">II</div><div><h4>Painel digital de 12,3 polegadas</h4><p>Velocidade e navegação em uma única leitura, sem tirar os olhos da estrada.</p></div></div>
+    <div class="int-item"><div class="n">III</div><div><h4>Som de 1.200 W com 14 alto-falantes</h4><p>Calibrado para a acústica da cabine.</p></div></div>
+  </div>
+</section>
+
+<!-- 5. FICHA TÉCNICA -->
+<section class="block" id="ficha">
+  <div class="ficha-grid">
+    <div class="rv">
+      <div class="kicker">Ficha técnica</div>
+      <h2 class="h2b">Tudo <em>em detalhe</em></h2>
+      <div class="ficha-intro"><p>Dados de referência do modelo 2026, sujeitos a confirmação na concessionária.</p></div>
+    </div>
+    <div>
+      <div class="ficha-row"><span>Motor</span><strong>V8 4,0 L biturbo</strong></div>
+      <div class="ficha-row"><span>Potência</span><strong>720 cv</strong></div>
+      <div class="ficha-row"><span>Torque</span><strong>900 Nm</strong></div>
+      <div class="ficha-row"><span>Transmissão</span><strong>Automática, 8 marchas</strong></div>
+      <div class="ficha-row"><span>Tração</span><strong>Traseira</strong></div>
+      <div class="ficha-row"><span>0 a 100 km/h</span><strong>3,1 s</strong></div>
+      <div class="ficha-row"><span>Peso</span><strong>1.240 kg</strong></div>
+      <div class="ficha-row"><span>Garantia</span><strong>5 anos ou 150.000 km</strong></div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. RESERVA -->
+<section class="final" id="reserva">
+  <div class="kicker rv">Reserva</div>
+  <h2 class="h2b rv">Sua <em>unidade</em> espera</h2>
+  <div class="final-price rv"><small>A partir de</small><span id="finalPrice">R$ 0</span></div>
+  <p class="final-lead rv">Reserve uma consultoria privada com um especialista. Retornamos em até duas horas úteis.</p>
+</section>
+
+<footer>
+  <div>© 2026 Aurum Automóveis · Faria Lima, 4.200 · São Paulo</div>
+  <div class="disc">Projeto de portfólio: marca, endereço, telefone e dados comerciais são fictícios.</div>
+</footer>
+
+<script>
+const CAR_FRAMES=["assets/car/001.webp", "assets/car/002.webp", "assets/car/003.webp", "assets/car/004.webp", "assets/car/005.webp", "assets/car/006.webp", "assets/car/007.webp", "assets/car/008.webp", "assets/car/009.webp", "assets/car/010.webp", "assets/car/011.webp", "assets/car/012.webp", "assets/car/013.webp", "assets/car/014.webp", "assets/car/015.webp", "assets/car/016.webp", "assets/car/017.webp", "assets/car/018.webp", "assets/car/019.webp", "assets/car/020.webp", "assets/car/021.webp", "assets/car/022.webp", "assets/car/023.webp", "assets/car/024.webp", "assets/car/025.webp", "assets/car/026.webp", "assets/car/027.webp", "assets/car/028.webp", "assets/car/029.webp", "assets/car/030.webp", "assets/car/031.webp", "assets/car/032.webp", "assets/car/033.webp", "assets/car/034.webp", "assets/car/035.webp", "assets/car/036.webp", "assets/car/037.webp", "assets/car/038.webp", "assets/car/039.webp", "assets/car/040.webp", "assets/car/041.webp", "assets/car/042.webp", "assets/car/043.webp", "assets/car/044.webp", "assets/car/045.webp", "assets/car/046.webp", "assets/car/047.webp", "assets/car/048.webp", "assets/car/049.webp", "assets/car/050.webp", "assets/car/051.webp", "assets/car/052.webp", "assets/car/053.webp", "assets/car/054.webp", "assets/car/055.webp", "assets/car/056.webp", "assets/car/057.webp", "assets/car/058.webp", "assets/car/059.webp", "assets/car/060.webp", "assets/car/061.webp", "assets/car/062.webp", "assets/car/063.webp", "assets/car/064.webp", "assets/car/065.webp", "assets/car/066.webp", "assets/car/067.webp", "assets/car/068.webp", "assets/car/069.webp", "assets/car/070.webp", "assets/car/071.webp", "assets/car/072.webp", "assets/car/073.webp", "assets/car/074.webp", "assets/car/075.webp", "assets/car/076.webp", "assets/car/077.webp", "assets/car/078.webp", "assets/car/079.webp", "assets/car/080.webp", "assets/car/081.webp", "assets/car/082.webp", "assets/car/083.webp", "assets/car/084.webp", "assets/car/085.webp", "assets/car/086.webp", "assets/car/087.webp", "assets/car/088.webp", "assets/car/089.webp", "assets/car/090.webp", "assets/car/091.webp", "assets/car/092.webp", "assets/car/093.webp", "assets/car/094.webp", "assets/car/095.webp", "assets/car/096.webp"];
+const ENG_FRAMES=["assets/engine/001.webp", "assets/engine/002.webp", "assets/engine/003.webp", "assets/engine/004.webp", "assets/engine/005.webp", "assets/engine/006.webp", "assets/engine/007.webp", "assets/engine/008.webp", "assets/engine/009.webp", "assets/engine/010.webp", "assets/engine/011.webp", "assets/engine/012.webp", "assets/engine/013.webp", "assets/engine/014.webp", "assets/engine/015.webp", "assets/engine/016.webp", "assets/engine/017.webp", "assets/engine/018.webp", "assets/engine/019.webp", "assets/engine/020.webp", "assets/engine/021.webp", "assets/engine/022.webp", "assets/engine/023.webp", "assets/engine/024.webp", "assets/engine/025.webp", "assets/engine/026.webp", "assets/engine/027.webp", "assets/engine/028.webp", "assets/engine/029.webp", "assets/engine/030.webp", "assets/engine/031.webp", "assets/engine/032.webp", "assets/engine/033.webp", "assets/engine/034.webp", "assets/engine/035.webp", "assets/engine/036.webp", "assets/engine/037.webp", "assets/engine/038.webp", "assets/engine/039.webp", "assets/engine/040.webp", "assets/engine/041.webp", "assets/engine/042.webp", "assets/engine/043.webp", "assets/engine/044.webp", "assets/engine/045.webp", "assets/engine/046.webp", "assets/engine/047.webp", "assets/engine/048.webp", "assets/engine/049.webp", "assets/engine/050.webp", "assets/engine/051.webp", "assets/engine/052.webp", "assets/engine/053.webp", "assets/engine/054.webp", "assets/engine/055.webp", "assets/engine/056.webp", "assets/engine/057.webp", "assets/engine/058.webp", "assets/engine/059.webp", "assets/engine/060.webp", "assets/engine/061.webp", "assets/engine/062.webp", "assets/engine/063.webp", "assets/engine/064.webp"];
+const INTERIOR_SRC="assets/interior.webp";
+
+const clamp=(v,a=0,b=1)=>Math.min(b,Math.max(a,v));
+const easeOut=t=>1-Math.pow(1-t,3);
+const fmt=(v,d)=>v.toLocaleString('pt-BR',{minimumFractionDigits:d,maximumFractionDigits:d});
+
+/* LOAD */
+const lbar=document.getElementById('lbar');
+const total=CAR_FRAMES.length+ENG_FRAMES.length+1;
+let done=0;
+function loadImgs(list){
+  return Promise.all(list.map(src=>new Promise(res=>{
+    const im=new Image();
+    const fin=()=>{done++;lbar.style.width=(done/total*100)+'%';res(im);};
+    im.onload=fin; im.onerror=fin; im.src=src;
+  })));
+}
+
+/* SCENE: frame scrubbing on canvas */
+function makeScene(canvas, frames, stageEl){
+  const ctx=canvas.getContext('2d');
+  const s={frames,stage:stageEl,cur:0,target:0,W:0,H:0};
+  s.size=function(){
+    const r=canvas.getBoundingClientRect();
+    const d=Math.min(devicePixelRatio||1,2);
+    canvas.width=r.width*d; canvas.height=r.height*d;
+    ctx.setTransform(d,0,0,d,0,0);
+    s.W=r.width; s.H=r.height;
+  };
+  s.progress=function(){
+    const sec=stageEl.parentElement;
+    const r=sec.getBoundingClientRect();
+    return clamp(-r.top/(sec.offsetHeight-innerHeight));
+  };
+  s.update=function(){
+    s.target=s.progress()*(frames.length-1);
+    s.cur+=(s.target-s.cur)*0.12;
+  };
+  s.draw=function(){
+    const im=frames[clamp(Math.round(s.cur),0,frames.length-1)];
+    const W=s.W,H=s.H;
+    ctx.fillStyle='#0a0c0b'; ctx.fillRect(0,0,W,H);
+    if(!im||!im.width) return;
+    const sc=Math.max(W/im.width,H/im.height);
+    const dw=im.width*sc, dh=im.height*sc;
+    ctx.drawImage(im,(W-dw)/2,(H-dh)/2,dw,dh);
+  };
+  return s;
+}
+
+/* OVERLAYS (scroll-driven fade) */
+let overlays=[];
+function setupOverlays(){
+  overlays=[...document.querySelectorAll('.ov[data-from]')].map(el=>{
+    el.dataset.base = getComputedStyle(el).transform==='none' ? '' : 'translateY(-50%)';
+    return el;
+  });
+}
+function updateOverlay(p,el){
+  const a=+el.dataset.from, b=+el.dataset.to, f=0.06;
+  let o=0;
+  if(p>=a&&p<=b) o=clamp(Math.min((p-a)/f,(b-p)/f));
+  el.style.opacity=o;
+  const y=(1-easeOut(o))*36;
+  el.style.transform = el.dataset.base ? `translateY(calc(-50% + ${y}px))` : `translateY(${y}px)`;
+}
+function updateCounters(p){
+  document.querySelectorAll('[data-cnt]').forEach(el=>{
+    const k=easeOut(clamp((p-(+el.dataset.start))/0.14));
+    el.textContent=Math.round(+el.dataset.cnt*k).toLocaleString('pt-BR');
+  });
+}
+
+/* PERFORMANCE BARS: filled by scroll position */
+const perfRows=[...document.querySelectorAll('.bar-row')].map(row=>({
+  row, fill:row.querySelector('.bar i'), num:row.querySelector('[data-num]'),
+  w:+row.querySelector('.bar i').dataset.w, target:+row.querySelector('[data-num]').dataset.num,
+  dec:+row.querySelector('[data-num]').dataset.dec
+}));
+function updatePerf(){
+  perfRows.forEach(r=>{
+    const b=r.row.getBoundingClientRect();
+    const f=clamp((innerHeight*0.92 - b.top)/(innerHeight*0.5));
+    const k=easeOut(f);
+    r.fill.style.width=(r.w*k)+'%';
+    r.num.textContent=fmt(r.target*k,r.dec);
+  });
+}
+
+/* REVEALS */
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(en=>{
+    if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); }
+  });
+},{threshold:0.2});
+function setupReveals(){
+  document.querySelectorAll('.rv,.ficha-row,.int-item').forEach(el=>io.observe(el));
+  document.querySelectorAll('.ficha-row').forEach((el,i)=>el.style.transitionDelay=(i*120)+'ms');
+  document.querySelectorAll('.int-item').forEach((el,i)=>el.style.transitionDelay=(i*200)+'ms');
+}
+
+/* INTERIOR PARALLAX */
+const intSec=document.getElementById('interior');
+const intImg=document.getElementById('intImg');
+function parallax(){
+  const r=intSec.getBoundingClientRect();
+  if(r.bottom<0||r.top>innerHeight) return;
+  const p=(innerHeight-r.top)/(innerHeight+r.height);
+  intImg.style.transform=`translate3d(0,${(p-0.5)*-120}px,0) scale(1.05)`;
+}
+
+/* FINAL PRICE: conta uma única vez, devagar, na primeira vez que a seção chega */
+const finalEl=document.getElementById('finalPrice');
+const finalSec=document.getElementById('reserva');
+let finalStarted=false;
+function animateFinal(){
+  const t0=performance.now(), dur=6000;
+  const step=now=>{
+    const k=clamp((now-t0)/dur);
+    const e=1-Math.pow(1-k,4);
+    finalEl.textContent='R$ '+Math.round(1289000*e).toLocaleString('pt-BR');
+    if(k<1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+const fio=new IntersectionObserver(entries=>{
+  entries.forEach(en=>{
+    if(en.isIntersecting && !finalStarted){
+      finalStarted=true; animateFinal(); fio.disconnect();
+    }
+  });
+},{threshold:0.45});
+fio.observe(finalSec);
+
+/* MAIN LOOP */
+let carScene, engScene;
+const nav=document.getElementById('nav');
+const pCar=document.getElementById('pCar'), pEng=document.getElementById('pEng');
+function tick(){
+  nav.classList.toggle('solid', scrollY>40);
+  const pc=carScene.progress(), pe=engScene.progress();
+  carScene.update(); engScene.update();
+  carScene.draw(); engScene.draw();
+  pCar.style.width=(pc*100)+'%';
+  pEng.style.width=(pe*100)+'%';
+  overlays.forEach(el=>updateOverlay(el.closest('#motor')?pe:pc, el));
+  updateCounters(pe);
+  updatePerf();
+  parallax();
+  requestAnimationFrame(tick);
+}
+
+/* INIT */
+async function init(){
+  const [carF,engF]=await Promise.all([loadImgs(CAR_FRAMES),loadImgs(ENG_FRAMES)]);
+  await loadImgs([INTERIOR_SRC]);
+  intImg.src=INTERIOR_SRC;
+  lbar.style.width='100%';
+  carScene=makeScene(document.getElementById('cCar'),carF,document.querySelector('#top .stage'));
+  engScene=makeScene(document.getElementById('cEng'),engF,document.querySelector('#motor .stage'));
+  const sizeAll=()=>{carScene.size();engScene.size();};
+  sizeAll();
+  window.addEventListener('resize',sizeAll);
+  setupOverlays();
+  setupReveals();
+  setTimeout(()=>document.getElementById('loader').classList.add('done'),350);
+  requestAnimationFrame(tick);
+}
+init();
+</script>
+</body>
+</html>
